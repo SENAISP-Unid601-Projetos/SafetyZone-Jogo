@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Safety Zone - Danger Analyst</title>
+    <link rel="icon" href="IMG/icon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="CSS/style_danger_analyst.css" />
+  </head>
+  <body>
+    <div id="loadingScreen" style="opacity: 0; display: none">
+      <div class="spinner"></div>
+      <p>Carregando jogo...</p>
+    </div>
+    <div id="gameContent" style="display: block">
+      <canvas></canvas>
+      <div id="hud">Tarefas: <span id="tasksCounter">0/13</span></div>
+      <div id="taskContainer">
+        <div id="dragAndDropTask" class="task-content">
+          <h3>Análise de Risco</h3>
+          <p>Arraste cada risco para a sua medida de segurança correta.</p>
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: flex-start;
+              gap: 20px;
+              width: 100%;
+            "
+          >
+            <div
+              id="dragItemsContainer"
+              style="display: flex; flex-direction: column"
+            ></div>
+            <div
+              id="dropTargetsContainer"
+              style="display: flex; flex-direction: column"
+            ></div>
+          </div>
+          <button id="dragDropCompleteBtn" style="display: none">
+            Concluir
+          </button>
+        </div>
+        <div id="orderTask" class="task-content">
+          <h3>Procedimento de Emergência</h3>
+          <p>Clique nos passos na ordem correta.</p>
+          <div id="orderStepsContainer"></div>
+          <button id="orderCompleteBtn" style="display: none">Concluir</button>
+        </div>
+        <div id="fastActionTask" class="task-content">
+          <h3>Perigo Elétrico</h3>
+          <p>Aperte o botão para desativar o perigo!</p>
+          <button id="fastActionBtn">Desativar Perigo</button>
+          <p id="fastActionMessage"></p>
+          <button id="fastActionCompleteBtn" style="display: none">
+            Concluir
+          </button>
+        </div>
+      </div>
+      <div id="victoryScreen" class="game-screen hidden">
+        <h2>Parabéns!</h2>
+        <img src="./IMG/medal_minigame1.png" alt="Medalha" style="width: 120px; height: auto; margin: 20px auto;" />
+        <p>Todas as tarefas de fiscalização foram concluídas!</p>
+        <button onclick="window.location.href='index.html'">
+          Voltar para o Mapa Principal
+        </button>
+      </div>
+      <div id="pauseMenu">
+        <ul id="menuOptions">
+          <li id="menuResume" class="selected">Retomar</li>
+          <li id="menuMainBtn">Menu Principal</li>
+        </ul>
+      </div>
+    </div>
+    <audio id="backgroundMusic" loop>
+      <source src="" type="audio/mpeg" />
+      Seu navegador não suporta o elemento de áudio.
+    </audio>
+    <script src="./JS/spritesheet_jogo1.js"></script>
+    <script src="./JS/bg_matriz_map.js"></script>
+    <script src="./JS/minigame/danger_analyst.js"></script>
+  </body>
+</html>

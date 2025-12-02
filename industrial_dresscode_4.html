@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Zone - Industrial Dresscode</title>
+      <link rel="stylesheet" href="CSS/style_industrial_dresscode.css" />
+      <link rel="stylesheet" href="CSS/pause.css" />
+  </head>
+  <body>
+    <!-- loadingScreen removed: loading handled inline by scripts -->
+    <div id="startScreen" class="game-screen" style="display: none">
+      <h1 class="text-3xl font-bold mb-4">Minijogo: EPIs Essenciais</h1>
+      <p class="mb-4">
+        Seu desafio é equipar o trabalhador com os EPIs corretos para cada
+        situação.
+      </p>
+      <p class="mb-4">
+        Selecione os EPIs do armário à esquerda e
+        <strong>arraste-os</strong> até o trabalhador.
+      </p>
+      <p class="mb-4">
+        Atenção: A ordem de equipamento é importante! Siga a sequência indicada.
+      </p>
+      <p class="mb-4">Você começa com 5 vidas por fase. Boa sorte!</p>
+      <button id="startButton">Começar</button>
+    </div>
+    <div id="gameOverScreen" class="game-screen" style="display: none">
+      <h1 class="text-3xl font-bold mb-4">Derrota!</h1>
+      <p class="mb-2">Você ficou sem vidas.</p>
+      <p id="gameOverMessage" class="mb-4"></p>
+      <button id="restartButton">Reiniciar Jogo</button>
+    </div>
+    <div id="victoryScreen" class="game-screen" style="display: none">
+      <h1 class="text-3xl font-bold mb-4">Parabéns! Missão Cumprida!</h1>
+      <img src="./IMG/medal_minigame4.png" alt="Medalha" style="width: 120px; height: auto; margin: 20px auto;" />
+      <p class="mb-2">Todos os trabalhadores foram equipados corretamente!</p>
+      <button id="backToMenuButton">Voltar ao Menu Principal</button>
+    </div>
+    <div class="main-container" id="gameScreen" style="display: none">
+      <div class="epi-shelf">
+        <div id="epiItems" class="flex flex-col gap-2"></div>
+      </div>
+      <div class="worker-area" id="workerArea">
+        <div class="background-blur-overlay"></div> ...
+        <div id="levelDisplay">Fase: 1</div>
+        <div id="livesDisplay"></div>
+        <div id="epiOrderDisplay" class="epi-order">Ordem: -</div>
+
+        <div
+          id="workerImageContainer"
+          class="relative mt-4 mb-4 flex justify-center items-center max-h-[800px] w-full">
+          <img
+            id="workerImage"
+            src=""
+            alt="Trabalhador"
+            class="max-h-full max-w-full object-contain"
+            style="z-index: 1"
+          />
+          <div
+            id="workerOverlays"
+            class="absolute top-0 left-0 w-full h-full"
+            style="z-index: 2; pointer-events: none"
+          ></div>
+          <audio id="backgroundMusic" loop>
+            <source src="SND/minijogo_2.mp3" type="audio/mpeg" />
+            Seu navegador não suporta o elemento de áudio.
+          </audio>
+        </div>
+        <p id="workerDescription" class="mt-4"></p>
+        <div id="overlayText" class="overlay-text"></div>
+      </div>
+    </div>
+    <div id="pauseMenu">
+      <ul id="menuOptions">
+        <li id="menuResume" class="selected">Retomar</li>
+        <li id="menuMainBtn">Menu Principal</li>
+      </ul>
+    </div>
+    <script src="./JS/minigame/industrial_dresscode.js"></script>
+    <script>
+      (function () {
+        const bg = document.getElementById('backgroundMusic');
+        if (!bg) return;
+        bg.volume = 0.25;
+
+        function tryPlay() {
+          bg.play().catch(() => {});
+        }
+
+        // Play once on first user interaction (click, key, or start button)
+        document.addEventListener('click', tryPlay, { once: true });
+        document.addEventListener('keydown', tryPlay, { once: true });
+        const sb = document.getElementById('startButton');
+        if (sb) sb.addEventListener('click', tryPlay, { once: true });
+      })();
+    </script>
+  </body>
+</html>

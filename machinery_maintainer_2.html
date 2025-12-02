@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Safety Zone - Machinery Maintainer</title>
+    <link rel="stylesheet" href="CSS/style_machinery_maintainer.css" />
+    <link rel="stylesheet" href="CSS/pause.css" />
+  </head>
+  <body>
+    <div id="machineCompleteScreen" class="game-screen hidden">
+      <h2>Manutenção Concluída!</h2>
+      <div class="mc-emoji"></div>
+      <p id="machineCompleteMessage"></p>
+      <button id="continueButton" >
+        Voltar para Visão Geral
+      </button>
+    </div>
+
+    <div id="canvasContainer" class="canvas-container">
+      <canvas width="1500" height="900" id="gameCanvas"></canvas>
+      <div id="factoryOverviewTitle" class="canvas-title hidden">VISÃO GERAL DA FÁBRICA</div>
+    </div>
+
+    <div id="hud">
+      <span id="timer">Tempo: 90 </span>
+      <span id="score">Progresso: 0% </span>
+      <span id="risksCounter">Corrigidos: 0/0 </span>
+      <div id="infoText"></div>
+    </div>
+
+    <div id="startScreen" class="game-screen flex">
+      <h1>Fiscalizador de Maquinários</h1>
+      <p class="muted-subtitle"><b>NRs 12, 13 e 14</b></p>
+      <div class="instructions">
+        <p>
+          <strong>Objetivo:</strong> Identificar os maquinários e corrigir as
+          irregularidades.
+        </p>
+        <p>
+          <strong>Mecânica:</strong> Selecione uma máquina na tela geral,
+          identifique seu nome e clique nos defeitos.
+        </p>
+        <p>
+          <strong>Vitória:</strong> Corrija pelo menos <strong>70%</strong> dos
+          problemas antes do tempo acabar.
+        </p>
+      </div>
+      <button id="startButton">INICIAR TURNO</button>
+    </div>
+
+    <div id="gameOverScreen" class="game-screen hidden">
+      <h1>Fim de Turno!</h1>
+      <p class="go-sub">Você não atingiu a meta de segurança.</p>
+      <p id="finalPercentLost" class="go-percent"></p>
+      <p class="muted-note">Necessário 70% para aprovação.</p>
+      <button id="restartButton" class="btn btn-restart">
+        Tentar Novamente
+      </button>
+    </div>
+
+    <div id="victoryScreen" class="game-screen hidden">
+      <h1>Bom Trabalho!</h1>
+      <img src="./IMG/medal_minigame2.png" alt="Medalha" style="width: 120px; height: auto; margin: 20px auto;" />
+      <p id="victoryMessage"></p>
+      <p id="finalPercentWon" class="victory-percent"></p>
+      <button id="backToMenuButton" class="btn btn-success">
+        Voltar ao Menu
+      </button>
+    </div>
+
+    <div id="identificationScreen">
+      <h2>Qual é este equipamento?</h2>
+      <div id="optionsContainer"></div>
+    </div>
+
+    <div id="taskDescription"></div>
+
+    <div id="pauseMenu">
+      <ul id="menuOptions">
+        <li id="menuResume" class="selected">Retomar</li>
+        <li id="menuMainBtn">Menu Principal</li>
+      </ul>
+    </div>
+    <audio id="backgroundMusic" loop>
+      <source src="SND/minijogo_2.mp3" type="audio/mpeg" />
+      Seu navegador não suporta o elemento de áudio.
+    </audio>
+    <script src="./JS/minigame/machinery_maintainer.js"></script>
+    <script>
+      (function () {
+        const bg = document.getElementById('backgroundMusic');
+        if (!bg) return;
+        bg.volume = 0.25;
+
+        function tryPlay() {
+          bg.play().catch(() => {});
+        }
+
+        document.addEventListener('click', tryPlay, { once: true });
+        document.addEventListener('keydown', tryPlay, { once: true });
+        const sb = document.getElementById('startButton');
+        if (sb) sb.addEventListener('click', tryPlay, { once: true });
+      })();
+    </script>
+  </body>
+</html>

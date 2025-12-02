@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8">
+    <title>Safety Zone - Lobby</title>
+    <link rel="icon" href="IMG/icon2.ico" type="image/x-icon" />
+    <style>
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      @font-face {
+        font-family: upheavtt;
+        src: url(./FONT/upheavtt.ttf);
+      }
+      @font-face {
+        font-family: consolas;
+        src: url(./FONT/CONSOLA.TTF);
+      }
+      body {
+        background: #e0e0e0;
+      }
+      /* Procure por este bloco no seu CSS e substitua por isso: */
+      canvas {
+        display: block;
+        margin: 0;
+        background: #fff;
+        border: none; /* Borda removida para ficar mais limpo em tela cheia */
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 100%;
+
+        image-rendering: pixelated;
+      }
+      /* ================= ESTILOS UI ================= */
+      #gameMenu {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 400px;
+        padding: 20px;
+        background-color: rgba(0, 0, 0, 0.8);
+        border: 2px solid #fff;
+        color: white;
+        text-align: center;
+        font-family: Arial, sans-serif;
+        z-index: 100;
+        border-radius: 10px;
+      }
+      #gameMenu h2 {
+        margin-top: 0;
+        color: #ffa500;
+      }
+      #gameMenu button {
+        padding: 10px 20px;
+        font-size: 1.2em;
+        cursor: pointer;
+        background-color: #1976d2;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+      #gameMenu button:hover {
+        background-color: #0d47a1;
+      }
+
+      * {
+        font-family: "PixelFont", "Courier New", monospace;
+        box-sizing: border-box;
+      }
+
+      #logo-menu {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 120px;
+        height: auto;
+        z-index: 101;
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+      }
+
+      #logoDropdownMenu {
+        position: absolute;
+        top: 160px;
+        left: 20px;
+        width: 220px;
+        background: linear-gradient(
+          135deg,
+          #0a1929 0%,
+          #1a3a5f 50%,
+          #2c5a8a 100%
+        );
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6),
+          0 2px 8px rgba(255, 165, 0, 0.3);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 102;
+        transform: translateY(-30px) scale(0.95);
+        opacity: 0;
+        transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        border: 1px solid rgba(255, 165, 0, 0.4);
+        backdrop-filter: blur(10px);
+      }
+
+      #logoDropdownMenu.show {
+        display: flex;
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+
+      .menu-item {
+        padding: 16px 20px;
+        color: #ffffff;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 14px;
+        position: relative;
+      }
+
+      .menu-item:hover {
+        background: linear-gradient(
+          90deg,
+          rgba(255, 165, 0, 0.15),
+          rgba(255, 140, 0, 0.1)
+        );
+        padding-left: 25px;
+        color: #ffa500;
+      }
+
+      /* Submenus e Controles de Música */
+      .submenu {
+        display: none;
+        position: absolute;
+        left: 100%;
+        top: 0;
+        width: 220px;
+        background: linear-gradient(135deg, #0a1929 0%, #1a3a5f 100%);
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+        flex-direction: column;
+        z-index: 103;
+        border: 1px solid rgba(255, 165, 0, 0.3);
+      }
+
+      .menu-item:hover .submenu {
+        display: flex;
+      }
+
+      .music-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 15px;
+      }
+
+      .music-track {
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.3s ease;
+      }
+
+      .music-track:hover {
+        background: rgba(255, 165, 0, 0.15);
+      }
+
+      .music-track.active {
+        background: rgba(255, 165, 0, 0.25);
+        border: 1px solid rgba(255, 165, 0, 0.5);
+        color: #ffa500;
+      }
+
+      .mute-btn {
+        margin-top: 12px;
+        padding: 10px;
+        background: linear-gradient(135deg, #ff8c00, #ffa500);
+        border: none;
+        border-radius: 6px;
+        color: white;
+        cursor: pointer;
+        font-size: 12px;
+      }
+
+      /* Tela de Comandos */
+      #commandsScreen {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 500px;
+        padding: 30px;
+        background: linear-gradient(135deg, #0a1929 0%, #1a3a5f 100%);
+        border: 2px solid rgba(255, 165, 0, 0.6);
+        color: white;
+        text-align: center;
+        z-index: 104;
+        border-radius: 15px;
+        backdrop-filter: blur(15px);
+      }
+
+      .command-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 12px 0;
+        padding: 12px 15px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+      }
+
+      .command-key img {
+        width: 45px;
+        height: auto;
+      }
+
+      .close-btn {
+        margin-top: 20px;
+        padding: 12px 25px;
+        background: linear-gradient(135deg, #ff8c00, #ffa500);
+        border: none;
+        border-radius: 8px;
+        color: white;
+        cursor: pointer;
+      }
+
+      .menu-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 99;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      /* Game Completion Menu */
+      #gameCompletionMenu {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 600px;
+        max-width: 90%;
+        padding: 50px 40px;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        border: 3px solid #ffd700;
+        border-radius: 20px;
+        text-align: center;
+        z-index: 105;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), inset 0 0 30px rgba(255, 215, 0, 0.2);
+        animation: slideIn 0.5s ease-out;
+        font-family: consolas;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translate(-50%, -50%) scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 1;
+        }
+      }
+
+      #gameCompletionMenu h1 {
+        font-family: upheavtt;
+        font-size: 48px;
+        color: #ffd700;
+        margin: 0 0 20px 0;
+        text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+        letter-spacing: 2px;
+      }
+
+      #gameCompletionMenu p {
+        font-size: 18px;
+        color: #e0e0e0;
+        margin: 15px 0;
+        line-height: 1.6;
+      }
+
+      #gameCompletionMenu .medal-section {
+        margin: 30px 0;
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+
+      #gameCompletionMenu .medal-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+
+      #gameCompletionMenu .medal-item img {
+        width: 100px;
+        height: 100px;
+        filter: drop-shadow(0 4px 8px rgba(255, 215, 0, 0.5));
+      }
+
+      #gameCompletionMenu .medal-item span {
+        font-size: 12px;
+        color: #ffd700;
+        font-weight: bold;
+      }
+
+      #gameCompletionMenu .button-group {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+        flex-wrap: wrap;
+      }
+
+      #gameCompletionMenu button {
+        padding: 15px 35px;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      #gameCompletionMenu .btn-victory {
+        background: linear-gradient(135deg, #ffd700, #ffed4e);
+        color: #1a1a2e;
+        box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+      }
+
+      #gameCompletionMenu .btn-victory:hover {
+        transform: scale(1.05);
+        box-shadow: 0 12px 30px rgba(255, 215, 0, 0.6);
+      }
+
+      #gameCompletionMenu .btn-lobby {
+        background: linear-gradient(135deg, #0f3460, #16213e);
+        color: #ffd700;
+        border: 2px solid #ffd700;
+        box-shadow: 0 8px 20px rgba(15, 52, 96, 0.6);
+      }
+
+      #gameCompletionMenu .btn-lobby:hover {
+        transform: scale(1.05);
+        box-shadow: 0 12px 30px rgba(255, 215, 0, 0.4);
+      }
+
+
+    </style>
+  </head>
+  <body>
+    <canvas id="gameCanvas"></canvas>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <!-- Logo e Dropdown (necessários para o UIManager) -->
+    <img src="IMG/logo_jogo.png" id="logo-menu" alt="Logo" />
+    <div id="logoDropdownMenu" aria-hidden="true">
+      <div class="menu-item" id="aboutBtn">Sobre</div>
+      <div class="menu-item" id="commandsBtn">Comandos</div>
+      <div class="menu-item" id="creditsBtn">Créditos</div>
+      <div class="menu-item" id="muteBtn">🔊 Mutar</div>
+    </div>
+
+    <!-- Tela de Comandos (inicialmente oculta) -->
+    <div id="commandsScreen" style="display: none;">
+      <h2>Comandos</h2>
+      <div class="command-item">
+        <div>Movimentação</div>
+        <div class="command-key">A / D</div>
+      </div>
+      <div class="command-item">
+        <div>Interagir</div>
+        <div class="command-key">Espaço</div>
+      </div>
+      <button class="close-btn" id="closeCommandsBtn">Fechar</button>
+    </div>
+
+    <div id="gameMenu">
+      <h2 id="menuTitle"></h2>
+      <p id="menuDescription"></p>
+      <button id="startGameBtn">Jogar</button>
+    </div>
+
+    <!-- Game Completion Menu -->
+    <div id="gameCompletionMenu">
+      <h1>PARABÉNS!</h1>
+      <p>Você completou todos os minigames com sucesso!</p>
+      <p>Conquistou as seguintes medalhas:</p>
+      <div class="medal-section" id="medalSection">
+        <!-- Medalhas serão inseridas aqui dinamicamente -->
+      </div>
+      <p style="font-size: 20px; color: #ffd700; margin-top: 25px;">
+        Você se tornou um Especialista em Segurança do Trabalho!
+      </p>
+      <div class="button-group">
+        <button class="btn-victory" id="viewCertificateBtn">Receber Recompensa Final</button>
+      </div>
+    </div>
+
+
+    <script>
+      //
+      class InputHandler {
+        constructor() {
+          this.keys = {};
+          window.addEventListener("keydown", (e) => {
+            this.keys[e.key] = true;
+          });
+          window.addEventListener("keyup", (e) => {
+            this.keys[e.key] = false;
+          });
+        }
+
+        isDown(key) {
+          // Suporte para maiúsculas e minúsculas
+          return this.keys[key] || this.keys[key.toUpperCase()];
+        }
+      }
+      //
+      class AudioManager {
+        constructor() {
+          this.audioContext = null;
+          this.currentSource = null;
+          this.isMuted = false;
+          this.tracks = {
+            track1: "./MUSIC/tema_principal.mp3",
+            track2: "./MUSIC/ambientacao.mp3",
+            track3: "./MUSIC/aventura.mp3",
+          };
+        }
+
+        init() {
+          if (!this.audioContext) {
+            this.audioContext = new (window.AudioContext ||
+              window.webkitAudioContext)();
+          }
+        }
+
+        play(trackId) {
+          this.init();
+          if (this.currentSource) this.currentSource.stop();
+          if (this.isMuted) return;
+
+          console.log(`Tocando: ${trackId} (Simulado)`);
+          // Aqui entraria a lógica real de fetch/decodeAudioData
+        }
+
+        toggleMute() {
+          this.isMuted = !this.isMuted;
+          if (this.isMuted && this.currentSource) {
+            this.currentSource.stop();
+          } else if (!this.isMuted) {
+            // Retomar música se necessário
+            const activeTrack = document.querySelector(".music-track.active");
+            if (activeTrack) this.play(activeTrack.dataset.track);
+          }
+          return this.isMuted;
+        }
+      }
+      // --- 3. CLASSE DO JOGADOR (PLAYER) ---
+      class Player {
+        constructor(gameWidth, gameHeight) {
+          // Configuração inicial dos tamanhos — serão atualizados ao carregar a imagem
+          this.originalW = 40;
+          this.originalH = 60;
+
+          this.w = this.originalW;
+          this.h = this.originalH;
+
+          // Posição no MUNDO (começa um pouco à frente, ex: 100px)
+          this.worldX = 100;
+
+          // Físicas
+          this.speed = 10;
+          this.maxSpeed = 100;
+          this.accel = 0.5;
+          this.initialSpeed = 3;
+
+          // Sprite
+          this.image = new Image();
+          this.image.src = "./IMG/spritesheet_worker_lobby.png";
+          this.isLoaded = false;
+
+          // Número de colunas e linhas na spritesheet (ajuste se necessário)
+          this.columns = 4; // frames por linha
+          this.rows = 4; // número de linhas
+
+          // Valores de frame que serão definidos após carregar a imagem
+          this.sW = 0;
+          this.sH = 0;
+          this.frameX = 0;
+          this.frameY = 0;
+          this.frameCount = 0;
+          this.animationSpeed = 6;
+
+          // Ao carregar, calcula os tamanhos reais dos frames a partir da imagem
+          this.image.onload = () => {
+            this.isLoaded = true;
+            // Proteção contra divisão por zero
+            if (this.columns > 0 && this.rows > 0) {
+              this.sW = Math.floor(this.image.width / this.columns);
+              this.sH = Math.floor(this.image.height / this.rows);
+
+              // Atualiza os tamanhos originais do jogador para casar com o sprite
+              this.originalW = this.sW;
+              this.originalH = this.sH;
+
+              // Atualiza w/h atuais considerando escala já aplicada no draw
+              this.w = this.originalW;
+              this.h = this.originalH;
+            }
+          };
+          this.isMoving = false;
+
+          this.stepSound = new Audio("./AUD/global/soundeffect_stepslobby.m4a");
+          this.stepSound.loop = true; // O som repete enquanto anda
+          this.stepSound.volume = 0.001; // Ajuste o volume se necessário
+        }
+
+        update(input, worldLimit) {
+          let movingLeft = input.isDown("a");
+          let movingRight = input.isDown("d");
+
+          this.isMoving = movingLeft || movingRight;
+
+          // Aceleração
+          if (this.isMoving) {
+            // Se está se movendo e o som está pausado, toca
+            if (this.stepSound.paused) {
+              this.stepSound
+                .play()
+                .catch((e) => console.log("Aguardando interação para áudio"));
+            }
+          } else {
+            // Se parou, pausa o som e reseta o tempo para o início
+            this.stepSound.pause();
+            this.stepSound.currentTime = 0;
+          }
+
+          // Movimento Real no Mundo
+          // --- CORREÇÃO AQUI ---
+          // Adicionamos "+ this.w" para verificar se o lado DIREITO do player bateu no limite
+          if (movingRight && this.worldX + this.w < worldLimit) {
+            this.worldX += this.speed;
+            this.frameY = 2;
+          } else if (movingLeft && this.worldX > 0) {
+            this.worldX -= this.speed;
+            this.frameY = 1;
+          } else {
+            this.frameY = 0;
+          }
+
+          // Animação
+          if (this.isMoving) {
+            this.frameCount++;
+            if (this.frameCount >= this.animationSpeed) {
+              this.frameCount = 0;
+              this.frameX = (this.frameX + 1) % 4;
+            }
+          } else {
+            this.frameX = 0;
+          }
+        }
+
+        // Agora o draw recebe a cameraX para calcular a posição na tela
+        // --- DENTRO DA CLASS PLAYER ---
+
+        // Agora o draw recebe a cameraX para calcular a posição na tela
+        draw(ctx, cameraX) {
+          // Altura de referência interna do jogo
+          const REFERENCE_HEIGHT = 800;
+
+          // O fator de escala será praticamente 1, já que fixamos a altura no resize
+          const scaleFactor = ctx.canvas.height / REFERENCE_HEIGHT;
+
+          this.w = this.originalW * scaleFactor;
+          this.h = this.originalH * scaleFactor;
+
+          // --- CORREÇÃO AQUI ---
+          // Em vez de calcular pelo centro, calculamos pelo CHÃO.
+          // Baseado no seu ajuste anterior, o chão visual fica na altura 780.
+          const GROUND_Y = 780 * scaleFactor;
+
+          // Posição X: Mundo - Câmera
+          let drawX = this.worldX - cameraX;
+
+          // Posição Y: Chão - Altura do Personagem (para ele ficar em pé no chão)
+          let drawY = GROUND_Y - this.h;
+
+          if (this.isLoaded) {
+            ctx.drawImage(
+              this.image,
+              this.frameX * this.sW,
+              this.frameY * this.sH,
+              this.sW,
+              this.sH,
+              drawX,
+              drawY,
+              this.w,
+              this.h
+            );
+          } else {
+            ctx.fillStyle = "blue";
+            ctx.fillRect(drawX, drawY, this.w, this.h);
+          }
+        }
+      }
+      // --- 4. CLASSE DE FUNDO (BACKGROUND/CAMERA) ---
+      class Background {
+        constructor(width, height) {
+          this.image = new Image();
+          this.image.src = "IMG/bg_lobby.png";
+          this.isLoaded = false;
+          this.image.onload = () => (this.isLoaded = true);
+
+          this.cameraX = 0;
+          this.worldLimit = 15000;
+        }
+
+        update(player, canvasWidth) {
+          // Tentar centralizar o player:
+          // Câmera ideal = Posição do Player - Metade da Tela
+          let targetCameraX = player.worldX - canvasWidth / 2;
+
+          // Limites da Câmera (não mostrar antes do 0 nem depois do fim do mundo)
+          // Math.max(0, ...) impede que vá para a esquerda do 0
+          // Math.min(..., worldLimit) impede que passe do fim
+          this.cameraX = Math.max(
+            0,
+            Math.min(targetCameraX, this.worldLimit - canvasWidth)
+          );
+        }
+
+        draw(ctx) {
+          if (!this.isLoaded) return;
+
+          // Mantém a escala correta baseada na altura
+          let scale = ctx.canvas.height / this.image.height;
+          let drawWidth = this.image.width * scale;
+
+          // --- CORREÇÃO AQUI ---
+          // ANTES: let bgX = -this.cameraX * 0.5;
+          // DEPOIS: Remova o "* 0.5". O fundo deve acompanhar a câmera 1:1
+
+          let bgX = -this.cameraX;
+
+          // Lógica para repetir o fundo (loop infinito)
+          // O operador % garante que desenhamos o fundo ciclicamente
+          let startX = bgX % drawWidth;
+
+          // Se startX for positivo (raro aqui, mas por segurança), ajustamos
+          if (startX > 0) startX -= drawWidth;
+
+          // O loop preenche a tela inteira com a imagem repetida
+          for (let x = startX; x < ctx.canvas.width; x += drawWidth) {
+            // Arredondamos 'x' para evitar linhas brancas entre as imagens
+            ctx.drawImage(
+              this.image,
+              Math.floor(x),
+              0,
+              Math.ceil(drawWidth),
+              ctx.canvas.height
+            );
+          }
+        }
+      }
+      // =========================================================
+      // SUBSTUTUA A CLASSE 'Game' NO SEU index.html
+      // =========================================================
+
+      class Game {
+        constructor() {
+          this.canvas = document.getElementById("gameCanvas");
+          this.ctx = this.canvas.getContext("2d");
+
+          // --- NOVO: Carregamento das Medalhas ---
+          this.medals = {};
+          const medalFiles = [
+            { id: "danger", src: "./IMG/medal_minigame1.png" }, // Jogo 1
+            { id: "machinery", src: "./IMG/medal_minigame2.png" }, // Jogo 2 (O que configuramos)
+            { id: "risk", src: "./IMG/medal_minigame3.png" }, // Jogo 3
+            { id: "firstaid", src: "./IMG/medal_minigame4.png" }, // Jogo 4
+            { id: "construction", src: "./IMG/medal_minigame5.png" }, // Jogo 5
+          ];
+
+          medalFiles.forEach((m) => {
+            const img = new Image();
+            img.src = m.src; // Certifique-se que as imagens estão na mesma pasta ou ajuste o caminho (ex: ./IMG/medal...)
+            this.medals[m.id] = img;
+          });
+
+          // --- NOVO: Adicionado ID correspondente ao save para cada área ---
+          this.areas = [
+            {
+              id: "danger", // ID único - Danger Analyst
+              x: 470,
+              w: 250,
+              h: 300,
+              name: "",
+              page: "./danger_analyst_1.html",
+            },
+            {
+              id: "machinery", // ID - Machinery Maintainer
+              x: 1770,
+              w: 250,
+              h: 300,
+              name: "",
+              page: "./machinery_maintainer_2.html",
+            },
+            {
+              id: "risk", // ID - Irregularities Checklist
+              x: 3060,
+              w: 250,
+              h: 300,
+              name: "",
+              page: "./irregularities_checklist_3.html",
+            },
+            {
+              id: "firstaid", // ID - Industrial Dresscode
+              x: 4350,
+              w: 250,
+              h: 300,
+              name: "",
+              page: "industrial_dresscode_4.html",
+            },
+            {
+              id: "construction", // ID - Spotless Workspace
+              x: 5670,
+              w: 250,
+              h: 300,
+              name: "",
+              page: "spotless_workspace_5.html",
+            },
+          ];
+
+          this.input = new InputHandler();
+          this.audio = new AudioManager();
+          this.player = new Player(this.canvas.width, this.canvas.height);
+          this.background = new Background(
+            this.canvas.width,
+            this.canvas.height
+          );
+          this.ui = new UIManager(this);
+
+          this.state = "PLAYING";
+          this.currentArea = null;
+
+          // --- NOVO: Variável para armazenar o progresso carregado ---
+          this.progress = {};
+
+          window.addEventListener("resize", () => this.resize());
+          this.resize();
+
+          // Carrega o progresso ao iniciar
+          this.loadProgress();
+
+          const lastArea = this.areas[this.areas.length - 1];
+          this.background.worldLimit = lastArea.x + lastArea.w + 500;
+        }
+
+
+
+        // --- NOVO: Função para ler o save ---
+        loadProgress() {
+          this.progress = JSON.parse(
+            localStorage.getItem("safetyGameProgress") || "{}"
+          );
+          console.log("Progresso carregado:", this.progress);
+
+          // Verifica se todos os minigames foram completados
+          this.checkGameCompletion();
+        }
+
+        // Verifica se todos os 5 minigames estão completos
+        checkGameCompletion() {
+          const requiredGames = ["danger", "machinery", "risk", "firstaid", "construction"];
+          const allCompleted = requiredGames.every((game) => this.progress[game] === true);
+
+          if (allCompleted) {
+            // Mostra o menu de conclusão
+            this.showCompletionMenu();
+          }
+        }
+
+        // Mostra o menu de conclusão de jogo
+        showCompletionMenu() {
+          const completionMenu = document.getElementById("gameCompletionMenu");
+          const medalSection = document.getElementById("medalSection");
+
+          // Limpa a seção de medalhas
+          medalSection.innerHTML = "";
+
+          // Define os dados das medalhas
+          const medalData = [
+            { id: "danger", name: "Fiscal de Segurança", img: "./IMG/medal_minigame1.png" },
+            { id: "machinery", name: "Manutentor de Excelência", img: "./IMG/medal_minigame2.png" },
+            { id: "risk", name: "Supervisor de Segurança", img: "./IMG/medal_minigame3.png" },
+            { id: "firstaid", name: "Especialista em EPIs", img: "./IMG/medal_minigame4.png" },
+            { id: "construction", name: "Limpeza de Alta Performance", img: "./IMG/medal_minigame5.png" },
+          ];
+
+          // Adiciona as medalhas ao menu
+          medalData.forEach((medal) => {
+            const medalItem = document.createElement("div");
+            medalItem.className = "medal-item";
+            medalItem.innerHTML = `
+              <img src="${medal.img}" alt="${medal.name}" title="${medal.name}">
+              <span>${medal.name}</span>
+            `;
+            medalSection.appendChild(medalItem);
+          });
+
+          // Configura o botão
+          const viewCertificateBtn = document.getElementById("viewCertificateBtn");
+
+          viewCertificateBtn.onclick = () => {
+            // Reseta o save e redireciona para victory.html
+            localStorage.setItem("safetyGameProgress", JSON.stringify({}));
+            window.location.href = "victory.html";
+          };
+
+          // Mostra o menu
+          completionMenu.style.display = "block";
+          this.state = "MENU";
+        }
+
+        resize() {
+          const GAME_HEIGHT = 865;
+          const aspectRatio = window.innerWidth / window.innerHeight;
+          this.canvas.height = GAME_HEIGHT;
+          this.canvas.width = GAME_HEIGHT * aspectRatio;
+
+          if (this.areas && this.areas.length > 0) {
+            const lastArea = this.areas[this.areas.length - 1];
+            this.background.worldLimit = lastArea.x + lastArea.w + 500;
+          }
+
+          if (this.state === "PLAYING") {
+            this.draw();
+          }
+        }
+
+        checkCollisions() {
+          this.currentArea = null;
+
+          for (const area of this.areas) {
+            if (
+              this.player.worldX + this.player.w > area.x &&
+              this.player.worldX < area.x + area.w
+            ) {
+              // --- NOVO: Se já completou, não define como currentArea interagível ---
+              if (this.progress[area.id]) {
+                // Opcional: Pode definir uma 'messageArea' diferente se quiser mostrar texto "Completo"
+                continue;
+              }
+
+              this.currentArea = area;
+              break;
+            }
+          }
+        }
+
+        update() {
+          if (this.state !== "PLAYING") return;
+
+          // Atualiza o progresso constantemente (caso você tenha cheats ou debug)
+          // this.loadProgress(); // Descomente se precisar de atualização em tempo real, mas não é necessário normalmente
+
+          this.player.update(this.input, this.background.worldLimit);
+          this.background.update(this.player, this.canvas.width);
+
+          this.checkCollisions();
+
+          if (this.input.isDown(" ") && this.currentArea) {
+            this.input.keys[" "] = false;
+            this.state = "MENU";
+            this.ui.showGameMenu(this.currentArea);
+          }
+        }
+
+        draw() {
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+          this.background.draw(this.ctx);
+
+          const scaleFactor = this.canvas.height / 865;
+          const GROUND_Y = 780 * scaleFactor;
+
+          for (const area of this.areas) {
+            let areaScreenX = area.x - this.background.cameraX;
+            let areaScreenY = GROUND_Y - area.h;
+
+            // Verifica se está visível
+            if (areaScreenX + area.w > 0 && areaScreenX < this.canvas.width) {
+              // --- NOVO: Verifica se a área está completa ---
+              const isCompleted = this.progress[area.id];
+
+              // Texto do Nome
+              this.ctx.font = "20px 'PixelFont', Arial";
+              this.ctx.fillStyle = "#333";
+              this.ctx.textAlign = "center";
+              this.ctx.fillText(
+                area.name,
+                areaScreenX + area.w / 2,
+                areaScreenY - 10
+              );
+
+              // --- Desenha apenas a Medalha se completou ---
+              if (isCompleted && this.medals[area.id]) {
+                const medalImg = this.medals[area.id];
+                // Tamanho da medalha
+                const mSize = 120;
+                // Posição: Centralizada acima da caixa, flutuando um pouco
+                const mX = areaScreenX + area.w / 2 - mSize / 2;
+                const mY = areaScreenY - mSize - 20; // 20px acima do nome
+
+                this.ctx.drawImage(medalImg, mX, mY, mSize, mSize);
+              }
+            }
+          }
+
+          this.player.draw(this.ctx, this.background.cameraX);
+
+          if (this.currentArea && this.state === "PLAYING") {
+            this.ctx.save();
+            this.ctx.font = "24px 'PixelFont'";
+            this.ctx.textAlign = "center";
+            this.ctx.strokeStyle = "black";
+            this.ctx.lineWidth = 4;
+            this.ctx.strokeText(
+              "Pressione ESPAÇO para entrar",
+              this.canvas.width / 2,
+              this.canvas.height / 2 - 120
+            );
+            this.ctx.fillStyle = "white";
+            this.ctx.fillText(
+              "Pressione ESPAÇO para entrar",
+              this.canvas.width / 2,
+              this.canvas.height / 2 - 120
+            );
+            this.ctx.restore();
+          }
+        }
+
+        start() {
+          const loop = () => {
+            this.update();
+            this.draw();
+            requestAnimationFrame(loop);
+          };
+          loop();
+        }
+      }
+      class UIManager {
+        constructor(gameInstance) {
+          this.game = gameInstance;
+
+          // Elementos do DOM
+          this.overlay = document.getElementById("menuOverlay");
+          this.dropdown = document.getElementById("logoDropdownMenu");
+
+          this.commandsScreen = document.getElementById("commandsScreen");
+          this.gameMenu = document.getElementById("gameMenu");
+
+          // Estado UI
+          this.isDropdownOpen = false;
+
+          this.setupListeners();
+        }
+        //
+        setupListeners() {
+          // Fechar menus ao clicar fora
+          this.overlay.addEventListener("click", () => this.closeAllMenus());
+
+          // Botões do Dropdown
+          document.getElementById("aboutBtn").addEventListener("click", () => {
+            alert("Jogo de Segurança do Trabalho v1.0");
+            this.closeAllMenus();
+          });
+
+          document
+            .getElementById("commandsBtn")
+            .addEventListener("click", () => {
+              this.closeAllMenus();
+              this.showOverlay(true);
+              this.commandsScreen.style.display = "block";
+            });
+
+          document
+            .getElementById("creditsBtn")
+            .addEventListener("click", () => {
+              alert("Desenvolvido por: Sua Equipe");
+              this.closeAllMenus();
+            });
+
+          // Botão Fechar Comandos
+          document
+            .getElementById("closeCommandsBtn")
+            .addEventListener("click", () => {
+              this.commandsScreen.style.display = "none";
+              this.showOverlay(false);
+            });
+
+          // Áudio UI
+          document.getElementById("muteBtn").addEventListener("click", (e) => {
+            const isMuted = this.game.audio.toggleMute();
+            e.target.textContent = isMuted ? "🔇 Desmutar" : "🔊 Mutar";
+          });
+
+          // Botão Jogar (Menu de Área)
+          document
+            .getElementById("startGameBtn")
+            .addEventListener("click", () => {
+              if (this.game.currentArea) {
+                window.location.href = this.game.currentArea.page;
+              }
+            });
+
+          // ESC para fechar
+          document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+              this.closeAllMenus();
+              if (this.game.state === "MENU") {
+                this.game.state = "PLAYING";
+                this.gameMenu.style.display = "none";
+              }
+            }
+          });
+        }
+        //
+        toggleDropdown() {
+          this.isDropdownOpen = !this.isDropdownOpen;
+          if (this.isDropdownOpen) {
+            this.dropdown.classList.add("show");
+            this.showOverlay(true);
+          } else {
+            this.dropdown.classList.remove("show");
+            this.showOverlay(false);
+          }
+        }
+        //
+        closeAllMenus() {
+          this.isDropdownOpen = false;
+          this.dropdown.classList.remove("show");
+          this.commandsScreen.style.display = "none";
+
+          // Se estiver fechando o menu de entrar no jogo
+          if (this.gameMenu.style.display === "block") {
+            this.gameMenu.style.display = "none";
+            this.game.state = "PLAYING";
+          }
+
+          this.showOverlay(false);
+        }
+        //
+        showOverlay(show) {
+          if (show) {
+            this.overlay.style.display = "block";
+            setTimeout(() => (this.overlay.style.opacity = "1"), 10);
+          } else {
+            this.overlay.style.opacity = "0";
+            setTimeout(() => (this.overlay.style.display = "none"), 300);
+          }
+        }
+        //
+        showGameMenu(area) {
+          document.getElementById("menuTitle").textContent = area.name;
+          document.getElementById(
+            "menuDescription"
+          ).textContent = `Você está prestes a entrar na ${area.name}. Deseja continuar?`;
+          this.gameMenu.style.display = "block";
+          this.showOverlay(true); // Fundo escuro
+        }
+      }
+      // --- INICIALIZAÇÃO ---
+      window.onload = () => {
+        const game = new Game();
+        game.start();
+
+        // Interação inicial de áudio (browsers bloqueiam autoplay)
+        document.addEventListener(
+          "click",
+          () => {
+            game.audio.init();
+            game.audio.play("track1");
+          },
+          { once: true }
+        );
+      };
+    </script>
+  </body>
+</html>

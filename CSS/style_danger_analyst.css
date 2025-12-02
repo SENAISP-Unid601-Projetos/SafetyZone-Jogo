@@ -1,0 +1,434 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #333;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  color: white;
+  text-align: center;
+}
+
+/* Tela de carregamento */
+#loadingScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #1a202c;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 101;
+  /* Adicionado para fade out */
+  transition: opacity 1s ease-out;
+  opacity: 1;
+}
+
+.spinner {
+  border: 8px solid rgba(255, 255, 255, 0.3);
+  border-top: 8px solid #f97316;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@font-face {
+  font-family: upheavtt;
+  src: url(../FONT/upheavtt.ttf);
+}
+@font-face {
+  font-family: consola;
+  src: url(../FONT/CONSOLA.TTF);
+}
+.game-screen {
+  /* Centralização absoluta padrão */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-image: url(../IMG/painel_mg1.png);
+  background-size: 100% 100%;
+  padding: 40px;
+  width: 680px;
+  height: 462px;
+  color: black;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 100;
+}
+
+.game-screen h2 {
+  color: black;
+  font-family: upheavtt;
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.game-screen p {
+  font-family: consolas;
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: black;
+}
+
+.game-screen button {
+  font-family: font_title2;
+  font-size: 30px;
+  padding: 10px 20px;
+  background-image: url(../IMG/btn_hover_commands.png);
+  background-color: transparent;
+  color: antiquewhite;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 350px;
+  height: 100px;
+}
+/* HUD */
+#hud {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2em;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px 20px;
+  border-radius: 10px;
+  z-index: 10;
+  font-family: upheavtt;
+}
+
+#taskContainer{
+background-image: url('../IMG/painel_mg1.png');
+background-size: 100% 100%;
+min-height: 400px;
+font-family: consolas;
+}
+#taskContainer h3{
+  font-size: 30px;
+  font-family: upheavtt;
+}
+
+/* Tarefas */
+#taskContainer,
+#victoryScreen {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 900px; /* Aumentei um pouco a largura máxima */
+  padding: 20px;
+  border-radius: 15px;
+  z-index: 100;
+  text-align: center;
+}
+
+.task-content {
+  display: none;
+}
+.task-content h3 {
+  color: #ffa500;
+}
+.task-content p {
+  font-size: 1.2em;
+}
+.task-content button {
+  padding: 10px 20px;
+  font-size: 1.2em;
+  cursor: pointer;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin-top: 10px;
+  margin: 5px; /* Adicionado margem para botões */
+}
+
+.task-content button:hover {
+  background-color: #0d47a1;
+}
+.option-btn {
+  margin: 5px;
+}
+.option-btn.correct {
+  background-color: #4caf50;
+}
+.option-btn.incorrect {
+  background-color: #f44336;
+}
+
+#victoryScreen h2 {
+  font-size: 3em;
+  color: #4caf50;
+  margin: 0;
+}
+
+/* ====================================================== */
+/* ========= MUDANÇA: CORREÇÃO DE ALINHAMENTO =========== */
+/* ====================================================== */
+
+/* Arrastar e Soltar */
+#dragAndDropTask {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.drag-item {
+  padding: 5px;
+  margin: 10px; /* Aumentei a margem vertical para afastar um do outro */
+  cursor: grab;
+  user-select: none;
+
+  /* Força o tamanho e centralização */
+  height: 70px;
+  width: 70px; /* Quadrado para o ícone */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.drop-target {
+  padding: 10px;
+  margin: 10px; /* MESMA margem do item para alinhar as linhas */
+  min-width: 300px; /* Mais largo para caber o texto */
+  user-select: none;
+
+  /* Força a mesma altura do item da esquerda */
+  height: 70px;
+  /* Box-sizing garante que padding não aumente a altura total além do calculado */
+  box-sizing: border-box;
+
+  /* Centraliza o texto verticalmente */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Texto alinhado à esquerda dentro da caixa */
+  padding-left: 20px;
+  font-size: 0.9em; /* Texto um pouco menor para caber melhor */
+  text-align: left;
+}
+
+.drag-drop-correct {
+  justify-content: center; /* Centraliza quando vira imagem */
+}
+
+/* Menu de Pausa com efeito */
+#pauseMenu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: none; /* Alterado para none, o JS controla o display */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: all 0.4s ease;
+  z-index: 100;
+}
+
+#pauseMenu.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+#menuOptions {
+  list-style: none;
+  padding: 0;
+  text-align: center;
+}
+
+#menuOptions li {
+  font-size: 2.5em;
+  padding: 10px 20px;
+  cursor: pointer;
+  color: #fff;
+  transition: all 0.25s ease;
+  font-family: upheavtt;
+}
+
+#menuOptions li.selected {
+  color: #00ffff;
+  transform: scale(1.15);
+  letter-spacing: 5px;
+}
+
+#menuOptions li:not(.selected) {
+  opacity: 0.6;
+}
+
+/* Carrossel de Música */
+#menuMusic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8em;
+}
+
+#musicName {
+  margin: 0 20px;
+  flex-shrink: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 450px;
+}
+
+.music-arrow {
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.4);
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+#menuMusic.selected .music-arrow {
+  color: #00ffff;
+  transform: scale(1.2);
+}
+
+/* ====================================================== */
+/* ========= ESTILOS PARA NOVAS TASKS =================== */
+/* ====================================================== */
+
+/* Socket Voltage Task */
+#socketVoltageTask {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+#socketContainer {
+  display: flex;
+  gap: 50px;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+#socket1-area,
+#socket2-area {
+  border: 2px solid #ccc;
+  padding: 20px;
+  text-align: center;
+  min-width: 150px;
+  min-height: 150px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+#socket1-area:hover,
+#socket2-area:hover {
+  background-color: #e3f2fd;
+}
+
+#stickerDragArea {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+#sticker-110V,
+#sticker-220V {
+  border: 2px dashed #2196F3;
+  padding: 15px;
+  text-align: center;
+  cursor: move;
+  background: rgba(33, 150, 243, 0.1);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+#sticker-220V {
+  border-color: #FF9800;
+  background: rgba(255, 152, 0, 0.1);
+}
+
+#sticker-110V:hover,
+#sticker-220V:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Toolbox Task */
+#toolboxTask {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+#toolboxContainer {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+#toolbox-area {
+  border: 2px solid #8B4513;
+  padding: 20px;
+  background: url('./IMG/minigame_1/tasks/tool_box.png') center/contain no-repeat;
+  background-color: #f5deb3;
+  min-width: 630px;
+  min-height: 412px;
+  position: relative;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+#tools-drag-area {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #f9f9f9;
+}
+
+.tool-item {
+  border: 1px solid #666;
+  padding: 8px;
+  background: #f0f0f0;
+  cursor: move;
+  text-align: center;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.tool-item:hover {
+  background: #e0e0e0;
+  transform: scale(1.05);
+}
+
+.tool-item:active {
+  opacity: 0.5;
+}

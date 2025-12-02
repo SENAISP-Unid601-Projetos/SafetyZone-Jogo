@@ -1,0 +1,599 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: "Inter", sans-serif;
+  color: white;
+  overflow: hidden;
+  user-select: none; /* Impede seleção de texto acidental */
+  background-image: url(../IMG/minigame_2/bg_body_mg2.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+#gameCanvas{
+  box-shadow: black 10px 20px 30px;
+  border-radius: 6px;
+}
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#loadingScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0f172a;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#loadingScreen.hidden {
+  display: none !important;
+}
+
+.spinner {
+  border: 8px solid rgba(255, 255, 255, 0.1);
+  border-top: 8px solid #f97316;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@font-face {
+  font-family: font_title1;
+  src: url(../FONT/04B_30__.TTF);
+}
+@font-face {
+  font-family: font_title2;
+  src: url(../FONT/upheavtt.ttf);
+}
+@font-face {
+  font-family: font_subtitle;
+  src: url(../FONT/PixelCraft.ttf);
+}
+@font-face {
+  font-family: font_body;
+  src: url(../FONT/CONSOLA.TTF);
+}
+
+.game-screen {
+  /* Centralização absoluta padrão */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-image: url(../IMG/painel_mg2.png);
+  background-size: 100% 100%;
+  padding: 40px;
+  width: 680px;
+  height: 462px;
+  color: black;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 100;
+}
+
+.game-screen h1 {
+  color: black;
+  font-family: font_title2;
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.game-screen p {
+  font-family: font_body;
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: black;
+}
+
+.game-screen button {
+  font-family: font_title2;
+  font-size: 30px;
+  padding: 10px 20px;
+  background-image: url(../IMG/btn_hover_begin.png);
+  background-color: transparent;
+  color: antiquewhite;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 350px;
+  height: 100px;
+}
+
+/* Classes auxiliares para ocultar/mostrar via JS */
+.hidden {
+  display: none !important;
+}
+.flex {
+  display: flex !important;
+}
+
+#taskDescription ul {
+  list-style-type: none;
+  padding: 0;
+}
+#taskDescription li {
+  margin-bottom: 8px;
+  padding-left: 20px;
+  position: relative;
+}
+#taskDescription li::before {
+  content: "⚠️";
+  position: absolute;
+  left: 0;
+  font-size: 0.8em;
+}
+
+/* HUD e caixa de informações */
+#hud {
+  position: absolute;
+  top: 20px;
+  left: 77%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  z-index: 600;
+  max-width: calc(100% - 40px);
+  font-family: font_body;
+}
+
+#hud span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  font-size: clamp(12px, 1.2vw, 18px);
+}
+
+/* Caixa de informações que aparece ligada ao HUD. Fica escondida por padrão e pode ser mostrada adicionando a classe .visible via JS */
+#infoText {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 220px;
+  max-width: 420px;
+  background: rgba(0, 0, 0, 0.85);
+  color: #f8fafc;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(249, 115, 22, 0.12);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  font-size: 14px;
+  line-height: 1.3;
+  display: none;
+  z-index: 610;
+}
+
+#infoText.visible {
+  display: block;
+}
+
+#infoText.hidden {
+  display: none !important;
+}
+
+/* Ajustes para telas menores */
+@media (max-width: 640px) {
+  #hud {
+    top: 12px;
+    gap: 8px;
+    padding: 6px 8px;
+  }
+  #hud span {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+  #infoText {
+    left: 50%;
+    min-width: 160px;
+    max-width: 320px;
+    font-size: 13px;
+  }
+}
+
+/* Generic button styles used in the screens */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: font_title2;
+  font-size: 18px;
+  border: none;
+  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  background-color: transparent;
+  color: #fff;
+  border: 2px solid rgba(249, 115, 22, 0.5);
+  box-shadow: 0 8px 30px rgba(249, 115, 22, 0.18);
+}
+.btn-primary:hover {
+  transform: translateY(-4px);
+}
+
+.btn-start {
+  background: linear-gradient(180deg, #fb923c, #f97316);
+  color: #fff;
+  border: 2px solid rgba(249, 115, 22, 0.5);
+  box-shadow: 0 8px 30px rgba(249, 115, 22, 0.18);
+}
+.btn-restart {
+  background: linear-gradient(180deg, #ef4444, #dc2626);
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px 16px;
+}
+.btn-restart:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(220, 38, 38, 0.14);
+}
+.btn-success {
+  background: linear-gradient(180deg, #34d399, #10b981);
+  color: #032;
+}
+
+/* machine complete screen specifics */
+#machineCompleteScreen h2 {
+  font-family: font_title2;
+  font-size: 40px;
+  margin: 6px 0 8px;
+  color: black;
+}
+.mc-emoji {
+  width: 250px;
+  height: 250px;
+  margin: -20px;
+  background-image: url(../IMG/minigame_2/check_bigger.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+#machineCompleteMessage {
+  font-family: font_body;
+  font-size: 20px;
+  margin-bottom: 14px;
+}
+
+/* Start screen */
+.muted-subtitle {
+  color: #e6e6e6;
+  margin-bottom: 8px;
+}
+
+/* Game over / victory */
+
+.go-sub {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #f8f9fb;
+}
+.go-percent {
+  font-size: 22px;
+  font-weight: 700;
+  color: #f59e0b;
+  margin-bottom: 8px;
+}
+.muted-note {
+  color: #a8b0bf;
+  font-size: 13px;
+}
+.victory-medal {
+  width: 150px;
+  height: 150px;
+  margin-bottom: 6px;
+}
+.medal-title {
+  font-size: 30px;
+  color: #000000;
+  margin: 0;
+  font-family: font_title2;
+}
+.victory-percent {
+  font-size: 28px;
+  font-weight: 700;
+  color: #34d399;
+  margin-top: 8px;
+}
+
+/* task description positioned box */
+#taskDescription {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: rgba(15, 23, 42, 0.95);
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 2px solid rgba(249, 115, 22, 0.3);
+  color: #fff;
+  min-width: 300px;
+  max-width: 400px;
+  z-index: 400;
+  display: none;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  font-family: Consolas, "Courier New", monospace;
+}
+
+#taskDescription.visible {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#taskDescription.hidden {
+  display: none !important;
+}
+
+/* Task Description Header */
+#taskDescription .task-header {
+  background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(249, 115, 22, 0.2);
+  border-radius: 8px 8px 0 0;
+  margin-bottom: 2px;
+}
+
+#taskDescription .task-header h3 {
+  font-family: font_title2;
+  color: #fb923c;
+  font-size: 17px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+#taskDescription .task-header p {
+  color: #9ca3af;
+  font-size: 14px;
+  margin: 4px 0 0 0;
+}
+
+/* Task Items Container */
+#taskDescription .task-items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Task Item */
+#taskDescription .task-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(249, 115, 22, 0.15);
+  transition: all 0.3s ease;
+}
+
+#taskDescription .task-item.completed {
+  background: rgba(52, 211, 153, 0.08);
+}
+
+#taskDescription .task-item.pending {
+  background: rgba(75, 85, 99, 0.2);
+}
+
+#taskDescription .task-icon {
+  font-size: 14px;
+  font-weight: bold;
+  min-width: 14px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+#taskDescription .task-item.completed .task-icon {
+  color: #34d399;
+}
+
+#taskDescription .task-item.pending .task-icon {
+  color: #9ca3af;
+}
+
+#taskDescription .task-description {
+  font-size: 12px;
+  flex: 1;
+}
+
+#taskDescription .task-item.completed .task-description {
+  color: #34d399;
+  text-decoration: line-through;
+}
+
+#taskDescription .task-item.pending .task-description {
+  color: #e5e7eb;
+}
+
+/* Task Footer */
+#taskDescription .task-footer {
+  background: #0f172a;
+  text-align: center;
+  padding: 6px 10px;
+  border-top: 1px solid rgba(249, 115, 22, 0.1);
+  border-radius: 0 0 8px 8px;
+  margin-top: 4px;
+  font-size: 9px;
+  color: #6b7280;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Identification screen (popup de identificação) */
+#identificationScreen {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  min-width: 320px;
+  max-width: 760px;
+  width: min(92%, 680px);
+  padding: 20px 22px;
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.96),
+    rgba(2, 6, 23, 0.9)
+  );
+  color: #f8fafc;
+  border-radius: 14px;
+  border: 1px solid rgba(249, 115, 22, 0.12);
+  box-shadow: 0 18px 50px rgba(2, 6, 23, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  z-index: 700;
+  font-family: font_body;
+  animation: pop-in 160ms ease-out both;
+}
+
+#identificationScreen.hidden {
+  display: none !important;
+}
+
+#identificationScreen h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #fff;
+  text-align: center;
+}
+
+#optionsContainer {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  margin-top: 4px;
+}
+
+#optionsContainer button {
+  font-family: font_body;
+  flex: 1 1 140px;
+  min-width: 120px;
+  max-width: calc(50% - 10px);
+  padding: 10px 14px;
+  background: rgba(249, 115, 22, 0.07);
+  color: #fff;
+  border: 1px solid rgba(249, 115, 22, 0.16);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+#optionsContainer button:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(249, 115, 22, 0.12);
+  background: rgba(249, 115, 22, 0.12);
+}
+
+@keyframes pop-in {
+  0% {
+    transform: translate(-50%, -46%) scale(0.99);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 520px) {
+  #identificationScreen {
+    padding: 14px;
+    gap: 10px;
+  }
+  #optionsContainer button {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+  #identificationScreen h2 {
+    font-size: 18px;
+  }
+}
+
+/* Canvas container and DOM title so the header can be styled with CSS instead of canvas text */
+.canvas-container {
+  position: relative;
+  width: 1500px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.canvas-container canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+#factoryOverviewTitle {
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ffffff;
+  font-family: font_title2, Inter, Arial, sans-serif;
+  font-size: 40px;
+  font-weight: 800;
+  text-shadow: 0 6px 18px rgba(0, 0, 0, 0.7);
+  z-index: 550; /* Above canvas but below HUD (600) */
+  pointer-events: none; /* Allow clicks to pass through */
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  #factoryOverviewTitle {
+    font-size: 28px;
+    top: 18px;
+  }
+}

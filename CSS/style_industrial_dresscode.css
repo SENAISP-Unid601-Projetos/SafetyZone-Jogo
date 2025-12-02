@@ -1,0 +1,435 @@
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  /* Removemos o overflow hidden global para permitir scroll se a tela for muito pequena */
+  overflow: auto;
+  font-family: "Inter", sans-serif;
+  /* Fundo escuro fora da área do jogo para dar destaque */
+  background-color: #1a202c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ESTILOS DA TELA DE CARREGAMENTO (LOADING SCREEN) - INÍCIO */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #008da9;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 101;
+  opacity: 1;
+  transition: opacity 3s ease-out;
+}
+.loading-screen.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+/* Pause menu (moved out of .loading-screen to avoid nesting issues) */
+#pauseMenu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: all 0.4s ease;
+  z-index: 100;
+  font-family: font_title2, "Inter", sans-serif;
+}
+
+#pauseMenu.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+#menuOptions {
+  list-style: none;
+  padding: 0;
+  text-align: center;
+}
+
+#menuOptions li {
+  font-size: 2.5em;
+  padding: 10px 20px;
+  cursor: pointer;
+  color: #fff;
+  transition: all 0.25s ease;
+}
+
+#menuOptions li.selected {
+  color: #00ffff;
+  transform: scale(1.15);
+  letter-spacing: 5px;
+}
+
+#menuOptions li:not(.selected) {
+  opacity: 0.6;
+}
+.spinner {
+  border: 8px solid rgba(255, 255, 255, 0.3);
+  border-top: 8px solid #f6ad55;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.loading-text {
+  font-size: 1.8rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+/* ESTILOS DA TELA DE CARREGAMENTO (LOADING SCREEN) - FIM */
+
+/* --- ESTRUTURA FIXA DO JOGO --- */
+.main-container {
+  display: flex;
+  /* TAMANHO FIXO: O jogo sempre terá este tamanho */
+  width: 1500px;
+  height: 900px;
+  color: white;
+  position: relative; /* Para posicionamento absoluto dos popups dentro dele */
+  overflow: hidden;
+}
+
+.epi-shelf {
+  background-image: url(../IMG/minigame_4/closet.png);
+  background-size: 100% 90%;
+  background-repeat: no-repeat;
+  width: 900px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.worker-area {
+  width: 1400px;
+  height: 808px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+  background-size: cover;
+  transition: opacity 0.4s ease-in-out;
+}
+
+.background-blur-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0; /* Certifique-se de que está atrás dos itens do jogo */
+  
+  /* Aplica a imagem e o desfoque neste elemento */
+  background-image: url(../IMG/minigame_4/bg_4mg.png); 
+  background-size: cover;
+  filter: blur(3px); 
+}
+
+/* Classe para animação de transição */
+.worker-area.is-transitioning {
+  opacity: 0;
+}
+
+#epiItems{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.epi-item {
+  border: none;
+  margin-right: 15px;
+  margin-left: 18px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  background-color: #008da900;
+}
+.epi-item img{
+  width: 150px;
+  height: 150px;
+  border: none;
+  background-color: #008da900;
+}
+.epi-item.is-dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+.epi-item.equipped {
+  cursor: default;
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+/* Telas de Pop-up (Start, Game Over, Victory) */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@font-face{
+    font-family:font_title1;
+    src:url(../FONT/04B_30__.TTF);
+}
+@font-face{
+    font-family:font_title2;
+    src:url(../FONT/upheavtt.ttf);
+}
+@font-face{
+    font-family:font_subtitle;
+    src:url(../FONT/PixelCraft.ttf);
+}
+@font-face{
+    font-family:font_body;
+    src:url(../FONT/CONSOLA.TTF);
+}
+
+.game-screen {
+    /* Centralização absoluta padrão */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-image: url(../IMG/painel_mg4.png);
+    background-size: 100% 100% ;
+    padding: 40px;
+    width: 680px;
+    height: 462px;
+    color: black;
+    
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 100;
+}
+
+.game-screen h1 {
+    font-family: font_title2;
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.game-screen p {
+    font-family: font_body;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.game-screen button {
+    font-family: font_title2;
+    font-size: 30px;
+    padding: 10px 20px;
+    background-image: url(../IMG/btn_hover_more.png);
+    background-color: transparent;
+    color: antiquewhite;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 350px;
+    height: 100px;
+}
+
+.overlay-text {
+  position: absolute;
+  bottom: 30px; /* Posição fixa em pixels */
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-size: 1.5rem;
+  text-align: center;
+  width: 400px; /* Largura fixa */
+  display: none;
+  z-index: 20;
+  font-family: font_title2;
+}
+
+/* Container da Imagem do Trabalhador - O MAIS IMPORTANTE PARA FIXAR OS EPIS */
+#workerImageContainer {
+  display: flex;
+  justify-content: center;
+  position: relative; /* torna o container referência para os overlays */
+  width: 700px; /* tamanho fixo para alinhar overlays e imagem base */
+  height: 700px;
+  align-items: center;
+}
+
+#workerImage {
+  /* Força a imagem a preencher o container fixo */
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Mantém proporção sem esticar */
+  position: relative;
+  z-index: 1;
+}
+
+#workerOverlays {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Balão de fala posicionado na cabeça do trabalhador */
+.speech-bubble {
+  position: absolute;
+  top: -20%; /* Ajuste fino: distância a partir do topo do container do trabalhador */
+  left: 35%;
+  transform: translateX(-50%);
+  width: 60%;
+  max-width: 420px;
+  pointer-events: none;
+  z-index: 3; /* acima dos overlays de EPI */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.speech-bubble img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.speech-bubble .bubble-text {
+  position: absolute;
+  top: 25%; 
+  left: 50%;
+  transform: translateX(-50%);
+  width: 82%;
+  text-align: center;
+  color: #0b0b0b;
+  font-size: 1rem;
+  font-family: font_body, 'Inter', sans-serif;
+  line-height: 1.2;
+  pointer-events: none;
+  word-wrap: break-word;
+}
+
+.worker-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Mesma regra da imagem base para alinhar */
+  animation: popIn 0.3s ease-out;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* O texto do trabalhador agora é mostrado dentro do balão de fala */
+#workerDescription {
+  display: none;
+}
+
+#livesDisplay {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  z-index: 10;
+}
+
+.heart {
+  width: 32px; /* Tamanho fixo */
+  height: 32px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.heart.full {
+  background-image: url("../IMG/heart_full_single.png");
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.heart.empty {
+  background-image: url("../IMG/heart_empty.png");
+}
+
+#levelDisplay {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 1.5rem;
+  padding: 10px 20px;
+  border-radius: 5px;
+  display: none;
+  z-index: 10;
+}
+
+/* Oculta a barra de rolagem */
+.epi-shelf::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.epi-shelf {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.epi-order {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1rem;
+  z-index: 10;
+}

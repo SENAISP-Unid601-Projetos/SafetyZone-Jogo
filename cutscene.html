@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Zone - Cutscene</title>
+    <link rel="icon" href="IMG/icon2.ico" type="image/x-icon">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @font-face {
+            font-family: texto;
+            src: url(FONT/CONSOLA.TTF);
+        }
+        @font-face {
+            font-family: titulo;
+            src: url(FONT/upheavtt.ttf);
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: texto;
+        }
+
+        #cutsceneContainer {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            overflow: hidden;
+        }
+
+        #cutsceneImage {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #000;
+        }
+
+        #textOverlay {
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            line-height: 1.4;
+            max-width: 90%;
+            margin: 0 auto;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        #nextButton {
+            font-family: titulo;
+            letter-spacing: 2px;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 12px 25px;
+            background: rgba(255, 102, 0, 0);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        #nextButton:hover {
+            background: rgba(255, 102, 0, 1);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.6);
+        }
+
+        #sceneIndicator {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            color: #ffa500;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 100;
+        }
+
+        /* Loading screen */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 102, 0, 0.2);
+            border-top: 4px solid #ffa500;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #loadingScreen p {
+            color: #ffa500;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #loadingScreen.hidden {
+            display: none;
+        }
+
+        /* Fade Out Screen */
+        #fadeOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 300;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease-in-out;
+        }
+
+        #fadeOverlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loadingScreen">
+        <div class="spinner"></div>
+        <p>Carregando cutscene...</p>
+    </div>
+
+    <div id="fadeOverlay"></div>
+
+    <div id="cutsceneContainer">
+        <img id="cutsceneImage" src="" alt="Cutscene">
+        <div id="textOverlay"></div>
+    </div>
+
+    <button id="nextButton">Próxima (ESPAÇO)</button>
+    <div id="sceneIndicator"></div>
+
+    <script>
+        class CutscenePlayer {
+            constructor() {
+                this.scenes = [
+                    {
+                        image: "./IMG/cutscene/scene1.png",
+                        text: "Todos os dias, milhares de trabalhadores convivem em ambientes que apresentam riscos às suas próprias vidas..."
+                    },
+                    {
+                        image: "./IMG/cutscene/scene2.png",
+                        text: "...e enfrentam cenários que exigem atenção, preparo e cuidado."
+                    },
+                    {
+                        image: "./IMG/cutscene/scene3.png",
+                        text: "A segurança no trabalho não é apenas uma regra..."
+                    },
+                    {
+                        image: "./IMG/cutscene/scene4.png",
+                        text: "...é o elemento chave para manter todos protegidos, saudáveis e produtivos."
+                    },
+                    {
+                        image: "./IMG/cutscene/scene5.png",
+                        text: "Mas e se pudéssemos aprender a evitar esses riscos... de forma prática e dinâmica?"
+                    }
+                ];
+
+                this.currentSceneIndex = 0;
+                this.isLoading = true;
+
+                // Elementos do DOM
+                this.imageElement = document.getElementById("cutsceneImage");
+                this.textOverlay = document.getElementById("textOverlay");
+                this.nextButton = document.getElementById("nextButton");
+                this.sceneIndicator = document.getElementById("sceneIndicator");
+                this.loadingScreen = document.getElementById("loadingScreen");
+                this.fadeOverlay = document.getElementById("fadeOverlay");
+
+                this.setupListeners();
+                this.preloadImages();
+            }
+
+            setupListeners() {
+                this.nextButton.addEventListener("click", () => this.nextScene());
+
+                document.addEventListener("keydown", (e) => {
+                    if (e.key === " ") {
+                        e.preventDefault();
+                        this.nextScene();
+                    }
+                });
+            }
+
+            preloadImages() {
+                let loadedCount = 0;
+                const totalScenes = this.scenes.length;
+
+                this.scenes.forEach((scene) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        loadedCount++;
+                        if (loadedCount === totalScenes) {
+                            this.isLoading = false;
+                            this.loadingScreen.classList.add("hidden");
+                            this.showScene(0);
+                        }
+                    };
+                    img.onerror = () => {
+                        loadedCount++;
+                        console.error(`Erro ao carregar: ${scene.image}`);
+                        if (loadedCount === totalScenes) {
+                            this.isLoading = false;
+                            this.loadingScreen.classList.add("hidden");
+                            this.showScene(0);
+                        }
+                    };
+                    img.src = scene.image;
+                });
+            }
+
+            showScene(index) {
+                if (index >= this.scenes.length) {
+                    this.endCutscene();
+                    return;
+                }
+
+                this.currentSceneIndex = index;
+                const scene = this.scenes[index];
+
+                // Atualiza a imagem
+                this.imageElement.src = scene.image;
+
+                // Atualiza o texto com animação
+                this.textOverlay.style.animation = "none";
+                setTimeout(() => {
+                    this.textOverlay.textContent = scene.text;
+                    this.textOverlay.style.animation = "fadeIn 0.8s ease-in-out";
+                }, 10);
+
+                // Atualiza o indicador
+                this.sceneIndicator.textContent = `Cena ${index + 1} de ${this.scenes.length}`;
+            }
+
+            nextScene() {
+                this.showScene(this.currentSceneIndex + 1);
+            }
+
+            endCutscene() {
+                // Ativa o fade overlay
+                this.fadeOverlay.classList.add("active");
+                
+                // Aguarda a animação de fade (1 segundo) e depois redireciona
+                setTimeout(() => {
+                    window.location.href = "lobby.html";
+                }, 1000);
+            }
+        }
+
+        // Inicializa o player de cutscene
+        window.addEventListener("DOMContentLoaded", () => {
+            new CutscenePlayer();
+        });
+    </script>
+</body>
+</html>

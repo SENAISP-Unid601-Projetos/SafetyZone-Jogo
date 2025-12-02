@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogar - Safety Zone</title>
+    <link rel="icon" href="IMG/icon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="CSS/style_beginpage.css">
+</head>
+<body>
+    <button id="goback" onclick="window.location.href='game_landingpage.html'"></button>
+    <div id="top-left">
+        <img src="IMG/logo_jogo.png">
+    </div>
+    <div id="top-right">
+        <button id="commands" onclick="window.location.href='commands.html'">COMANDOS</button>
+        <button id="about" onclick="window.location.href='about.html'">SOBRE</button>
+        <button id="more" onclick="window.location.href='more.html'">CRÉDITOS</button>
+    </div>
+    <button id="lobby" onclick="localStorage.setItem('safetyGameProgress', JSON.stringify({})); window.location.href='cutscene.html'">INICIAR</button>
+</body>
+</html>

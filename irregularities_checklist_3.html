@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Zone - Irregularities Checklist</title>
+    <link rel="stylesheet" href="CSS/style_irregularities_checklist.css">
+    <link rel="stylesheet" href="CSS/pause.css" />
+  </head>
+  <body>
+    <div
+      class="score-container"
+      id="timerContainer"
+      style="top: 10px; left: 30px"
+    >
+      Tempo: <span id="timerDisplay">02:00</span>
+    </div>
+
+    <div
+      class="score-container"
+      id="phaseContainer"
+      style="top: 10px; left: 180px"
+    >
+      Fase: <span id="phaseDisplay">1/3</span>
+    </div>
+
+    <div id="phaseTransitionScreen" class="game-screen" style="display: none">
+      <h1 class="text-3xl font-bold mb-4">FASE CONCLUÍDA!</h1>
+      <p class="mb-2 text-green-400">Próxima fase em breve...</p>
+    </div>
+
+    <div id="startScreen" class="game-screen" style="display: none">
+      <h1 class="text-3xl font-bold mb-4">Minijogo: Relatório de NRs</h1>
+      <p class="mb-4">
+        Seu trabalho é fiscalizar a obra e relatar as irregularidades.
+      </p>
+      <p class="mb-4">
+        Você verá um cenário na direita. Na esquerda, clique no item da planilha
+        que corresponde a uma irregularidade na imagem.
+      </p>
+      <p class="mb-4 text-yellow-400">
+        ⚠️ Você tem 5 vidas. Cada erro remove uma vida!
+      </p>
+      <button id="startButton">Começar</button>
+    </div>
+
+    <div id="gameOverScreen" class="game-screen" style="display: none">
+      <h1 id="gameOverTitle" class="text-3xl font-bold mb-4">Fim de Jogo!</h1>
+      <p id="gameOverMessage" class="mb-2 text-red-400">
+        Você perdeu todas as vidas!
+      </p>
+      <button id="restartButton">Reiniciar</button>
+    </div>
+
+    <div id="victoryScreen" class="game-screen" style="display: none">
+      <h1 class="text-3xl font-bold mb-4">Missão Cumprida!</h1>
+      <img src="./IMG/medal_minigame3.png" alt="Medalha" style="width: 120px; height: auto; margin: 20px auto;" />
+      <p class="mb-2 text-green-400">
+        Você identificou todas as irregularidades!
+      </p>
+      <button id="backToMenuButton">Voltar ao Menu Principal</button>
+    </div>
+
+    <div class="main-container" id="gameScreen" style="display: none">
+      <div class="checklist-container">
+        <br /><br /><br />
+        <div id="checklistItems" class="flex flex-col"></div>
+      </div>
+      <div class="game-area" id="gameArea">
+        <div class="hearts-container">
+          <h3 class="text-lg font-bold mb-2">Vidas</h3>
+          <div id="hearts"></div>
+        </div>
+        <div id="overlayText" class="overlay-text"></div>
+      </div>
+    </div>
+
+    <div id="pauseMenu">
+      <ul id="menuOptions">
+        <li id="menuResume" class="selected">Retomar</li>
+        <li id="menuMainBtn">Menu Principal</li>
+      </ul>
+    </div>
+    <audio id="backgroundMusic" loop>
+      <source src="SND/minijogo_3.mp3" type="audio/mpeg" />
+      Seu navegador não suporta o elemento de áudio.
+    </audio>
+    <script src="JS/minigame/irregularities_checklist.js"></script>
+    <script>
+      (function () {
+        const bg = document.getElementById('backgroundMusic');
+        if (!bg) return;
+        bg.volume = 0.25;
+
+        function tryPlay() {
+          bg.play().catch(() => {});
+        }
+
+        document.addEventListener('click', tryPlay, { once: true });
+        document.addEventListener('keydown', tryPlay, { once: true });
+        const sb = document.getElementById('startButton');
+        if (sb) sb.addEventListener('click', tryPlay, { once: true });
+      })();
+    </script>
+  </body>
+</html>

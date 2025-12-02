@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Zone - Spotless Workspace</title>
+    <link rel="stylesheet" href="./CSS/style_spotless_workspace.css" />
+    <link rel="stylesheet" href="./CSS/pause.css" />
+  </head>
+  <body>
+    <div id="startScreen" class="game-screen" style="display: none">
+      <h1 class="text-3xl font-bold mb-4">Coleta de Resíduos</h1>
+      <p class="mb-4">
+        Seu desafio: descarte os resíduos nas lixeiras corretas de acordo com
+        seu tipo de material.
+      </p>
+      <p class="mb-4">
+        Arraste os itens da área de trabalho para as lixeiras
+        no canto inferior direito.
+      </p>
+      <button id="startButton">Começar</button>
+    </div>
+
+    <div id="gameOverScreen" class="game-screen" style="display: none">
+      <h1 class="text-3xl font-bold mb-4">Tempo Esgotado!</h1>
+      <p id="gameOverMessage" class="mb-4">
+        Você falhou em descartar todos os resíduos a tempo.
+      </p>
+      <button id="restartButton">Tentar Novamente</button>
+      <button id="backToMenuButton" style="margin-top: 10px">
+        Voltar ao Menu Principal
+      </button>
+    </div>
+
+    <div id="victoryScreen" class="game-screen" style="display: none">
+      <h1 class="text-3xl font-bold mb-4" id="victoryTitle">Parabéns!</h1>
+
+      <img src="./IMG/medal_minigame5.png" alt="Medalha" style="width: 120px; height: auto; margin: 20px auto;" />
+
+      <p class="mb-4">Você descartou todos os resíduos corretamente!</p>
+
+      <p id="victoryScore" class="mb-4 font-bold text-xl">Pontuação Final: 0</p>
+
+      <button id="nextLevelButton">
+        Próximo Nível >>
+      </button>
+    </div>
+    <div style="display: flex; flex-direction: column;align-items: center;">
+      <div class="main-container" id="gameScreen" style="display: none">
+        <div class="workspace-area" id="gameArea">
+          <div id="timer" class="hud-element top-left"></div>
+          <div id="score" class="hud-element top-right"></div>
+          <div id="remaining" class="hud-element top-center"></div>
+          
+          <div id="trashItemsContainer"></div>
+          
+          <div id="overlayMessage" class="overlay-text"></div>
+        </div>
+      </div>
+
+      <div id="binContainer" class="bin-container-fixed"></div>
+    </div>
+
+    <div id="pauseMenu">
+      <ul id="menuOptions">
+        <li id="menuResume" class="selected">Retomar</li>
+        <li id="menuMainBtn">Menu Principal</li>
+      </ul>
+    </div>
+    <audio id="backgroundMusic" loop>
+      <source src="SND/minijogo_4_musica.mp3" type="audio/mpeg" />
+      Seu navegador não suporta o elemento de áudio.
+    </audio>
+    <script src="./JS/minigame/spotles_workspace.js"></script>
+    <script>
+      (function () {
+        const bg = document.getElementById('backgroundMusic');
+        if (!bg) return;
+        bg.volume = 0.25;
+
+        function tryPlay() {
+          bg.play().catch(() => {});
+        }
+
+        document.addEventListener('click', tryPlay, { once: true });
+        document.addEventListener('keydown', tryPlay, { once: true });
+        const sb = document.getElementById('startButton');
+        if (sb) sb.addEventListener('click', tryPlay, { once: true });
+      })();
+    </script>
+  </body>
+</html>

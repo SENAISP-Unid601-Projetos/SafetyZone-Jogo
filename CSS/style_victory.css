@@ -1,0 +1,110 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+body{
+    color:#ffffff;
+    background-image:url(../IMG/bg_endpage.png);
+    background-size:cover;
+    background-repeat:no-repeat;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:row;
+}
+@font-face{
+    font-family:font_title1;
+    src:url(../FONT/04B_30__.TTF);
+}
+@font-face{
+    font-family:font_title2;
+    src:url(../FONT/upheavtt.ttf);
+}
+@font-face{
+    font-family:font_subtitle;
+    src:url(../FONT/PixelCraft.ttf);
+}
+@font-face{
+    font-family:font_body;
+    src:url(../FONT/CONSOLA.TTF);
+}
+#org1{
+    height:600px;
+    width:600px;
+    margin-top:120px;
+    display:flex;
+    justify-content:flex-start;
+    align-items:flex-start;
+    flex-direction:column;
+}
+#org2{
+    height:600px;
+    width:600px;
+    margin-top:40px;
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+    flex-direction:column;
+}
+#title{
+    color:#ffffff;
+    font-family:font_title2;
+    font-size:70px;
+    letter-spacing:5px;
+    text-shadow:0 0 4px #ffffff, 0 0 6px #ffffffdb, 0 0 8px #ffffffab, 0 0 10px #ffffff9f;
+}
+#subtitle{
+    font-family:font_subtitle;
+    font-size:30px;
+    color:#ffd460;
+    letter-spacing:3px;
+    margin-bottom:10px;
+    text-shadow:0 0 3px #ffd460, 0 0 6px #ffd560db, 0 0 9px #ffd560b7, 0 0 12px #ffd56092;
+}
+#text{
+    font-family:font_body;
+    font-size:25px;
+    text-indent:30px;
+    text-align:justify;
+}
+#img_logo{
+    height:150px;
+    width:375px;
+    margin-bottom:20px;
+}
+#img_final{
+    height:400px;
+    width:400px;
+}
+#again{
+    height:70px;
+    width:280px;
+    color:#000000;
+    background-image:url(../IMG/btn_jogar.png);
+    background-size:cover;
+    background-repeat:no-repeat;
+    background-color:transparent;
+    border:none;
+    margin-top:20px;
+    margin-right:60px;
+    font-family:font_title2;
+    font-size:25px;
+    transition:all 0.3s ease-in-out;
+}
+#again:hover{
+    height:70px;
+    width:280px;
+    color:#ffffff;
+    background-image:url(../IMG/btn_jogar_hover.png);
+    background-size:cover;
+    background-repeat:no-repeat;
+    background-color:transparent;
+    border:none;
+    margin-top:20px;
+    margin-right:60px;
+    font-family:font_title2;
+    font-size:27px;
+    text-shadow:0 0 1px #ffffff, 0 0 2px #ffffffdb, 0 0 4px #ffffffab, 0 0 6px #ffffff9f;
+    transition:all 0.3s ease-in-out;
+}

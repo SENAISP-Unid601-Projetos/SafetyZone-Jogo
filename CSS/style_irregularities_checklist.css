@@ -1,0 +1,378 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-image: url(../IMG/minigame_3/bg_body_mg3.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  font-family: "Inter", sans-serif;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+@font-face {
+  font-family: consola;
+  /* Certifique-se que essa fonte existe ou remova essa linha */
+  src: url(../font/CONSOLA.TTF);
+}
+/* --- Tela de Carregamento --- */
+#loadingScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #1a202c;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.spinner {
+  border: 8px solid rgba(255, 255, 255, 0.3);
+  border-top: 8px solid #f97316;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* --- Container Principal --- */
+.main-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  overflow: auto;
+}
+
+.container, .main, #main, .content {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+img, .img, .imagem {
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    display: block;
+}
+
+/* --- Área da Prancheta --- */
+
+/* --- Área do Jogo --- */
+.game-area {
+  margin-top: 15px;
+  position: relative;
+  width: 1200px;
+  height: 900px;
+  overflow: hidden;
+  border: 5px solid #512f6f;
+  border-radius: 10px;
+  box-shadow: 0 0 20px #512f6f69;
+  
+  /* --- CORREÇÃO IMPORTANTE --- */
+  /* Isso garante que a imagem inserida pelo JS apareça corretamente */
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #2d3748; /* Cor de fundo caso a imagem falhe */
+}
+
+/* .game-image não é mais necessário pois o JS usa background-image na div acima, 
+mas mantemos por compatibilidade */
+.game-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.checklist-container {
+  width: 450px;
+  height: 900px;
+  overflow-y: auto;
+  padding: 15px;
+  border-radius: 10px;
+  /* Caminho da imagem de fundo da prancheta */
+  background-image: url(../IMG/minigame_3/prancheta.png);
+  background-size: 100% 100%;
+  overflow-x: hidden;
+}
+.checklist-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 390px;
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+  text-align: left;
+  margin-left: 37px;
+  border: none;
+  color: black;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 1.3;
+  margin-bottom: 10px;
+  font-family: "Courier New", Courier, monospace;
+  border-radius: 6px;
+  padding: 6px 8px;
+  background-color: transparent; /* não colorir todo o item */
+}
+
+.check-text {
+  flex: 1 1 auto;
+  margin-left: 12px; /* espaço entre square e texto */
+  color: #000;
+  text-align: left;
+}
+
+.checklist-item:hover {
+  background-color: rgba(255,255,255,0.02);
+}
+
+/* Container do quadrado ao lado direito */
+.check-square {
+  width: 44px;
+  height: 44px;
+  position: relative;
+  flex: 0 0 44px;
+  display: inline-block;
+}
+
+.check-square img.square-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.check-square img.check-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 32px;
+  opacity: 0;
+  transition: opacity 200ms ease, transform 200ms ease;
+  pointer-events: none;
+}
+
+/* Quando marcado corretamente, mostra o check sobre o square */
+.check-square.checked img.check-overlay {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Animação visual discreta para erro (apenas no quadrado) */
+.check-square.wrong {
+  animation: wrongFlash 420ms ease;
+}
+
+@keyframes wrongFlash {
+  0% { transform: translateY(0) scale(1); filter: none; }
+  30% { transform: translateY(-3px) scale(1.03); filter: drop-shadow(0 0 6px rgba(229,62,62,0.9)); }
+  100% { transform: translateY(0) scale(1); filter: none; }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Menu de Pausa (copiado de style_danger_analyst.css) */
+#pauseMenu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: all 0.4s ease;
+  z-index: 100;
+  font-family: upheavtt, "Courier New", monospace;
+}
+
+#pauseMenu.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+#menuOptions {
+  list-style: none;
+  padding: 0;
+  text-align: center;
+}
+
+#menuOptions li {
+  font-size: 2.5em;
+  padding: 10px 20px;
+  cursor: pointer;
+  color: #fff;
+  transition: all 0.25s ease;
+}
+
+#menuOptions li.selected {
+  color: #00ffff;
+  transform: scale(1.15);
+  letter-spacing: 5px;
+}
+
+#menuOptions li:not(.selected) {
+  opacity: 0.6;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@font-face{
+    font-family:font_title1;
+    src:url(../FONT/04B_30__.TTF);
+}
+@font-face{
+    font-family:font_title2;
+    src:url(../FONT/upheavtt.ttf);
+}
+@font-face{
+    font-family:font_subtitle;
+    src:url(../FONT/PixelCraft.ttf);
+}
+@font-face{
+    font-family:font_body;
+    src:url(../FONT/CONSOLA.TTF);
+}
+
+.game-screen {
+    /* Centralização absoluta padrão */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-image: url(../IMG/painel_mg3.png);
+    background-size: 100% 100% ;
+    padding: 40px;
+    width: 680px;
+    height: 462px;
+    color: black;
+    
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 100;
+}
+
+.game-screen h1 {
+    font-family: font_title2;
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.game-screen p {
+    font-family: font_body;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.game-screen button {
+    font-family: font_title2;
+    font-size: 30px;
+    padding: 10px 20px;
+    background-image: url(../IMG/btn_hover_about.png);
+    background-color: transparent;
+    color: antiquewhite;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 350px;
+    height: 100px;
+}
+
+.overlay-text {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(26, 32, 44, 0.9);
+  color: #fff;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-size: 1.5rem;
+  text-align: center;
+  min-width: 300px;
+  display: none;
+  border: 1px solid #f6ad55;
+  z-index: 50;
+}
+
+/* --- Estilos do Sistema de Corações --- */
+.hearts-container {
+  font-family: font_title2;
+  color: white;
+  padding: 15px;
+  border-radius: 20px;
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.527);
+}
+.hearts-container h3 {
+  margin: 0 0 5px 0;
+  font-size: 1.5rem;
+}
+
+#hearts {
+  display: flex;
+  gap: 5px;
+}
+
+.heart-full,
+.heart-empty {
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.8));
+}
+
+.score-container {
+  position: absolute;
+  top: 10px;
+  padding: 8px 15px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  z-index: 5;
+  font-family: font_body;
+}
