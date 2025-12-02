@@ -261,8 +261,8 @@ const tasks = [
   {
     tileX: 12,
     tileY: 10,
-    x: 12 * TILE_SIZE,
-    y: 11 * TILE_SIZE,
+    x: 8 * TILE_SIZE,
+    y: 14 * TILE_SIZE,
     w: 32,
     h: 32,
     isCompleted: false,
@@ -334,8 +334,8 @@ const tasks = [
   {
     tileX: 4,
     tileY: 60,
-    x: 5 * TILE_SIZE,
-    y: 61 * TILE_SIZE,
+    x: 55 * TILE_SIZE,
+    y: 5 * TILE_SIZE,
     w: 32,
     h: 32,
     isCompleted: false,
@@ -384,7 +384,7 @@ const tasks = [
   {
     tileX: 12,
     tileY: 50,
-    x: 12 * TILE_SIZE,
+    x: 60 * TILE_SIZE,
     y: 52 * TILE_SIZE,
     w: 32,
     h: 32,
@@ -434,8 +434,8 @@ const tasks = [
   {
     tileX: 24,
     tileY: 18,
-    x: 24 * TILE_SIZE,
-    y: 18 * TILE_SIZE,
+    x: 5 * TILE_SIZE,
+    y: 23 * TILE_SIZE,
     w: 32,
     h: 32,
     isCompleted: false,
@@ -484,7 +484,7 @@ const tasks = [
   {
     tileX: 22,
     tileY: 36,
-    x: 22 * TILE_SIZE,
+    x: 5 * TILE_SIZE,
     y: 36 * TILE_SIZE,
     w: 32,
     h: 32,
@@ -499,7 +499,7 @@ const tasks = [
   {
     tileX: 22,
     tileY: 58,
-    x: 22 * TILE_SIZE,
+    x: 5 * TILE_SIZE,
     y: 60 * TILE_SIZE,
     w: 32,
     h: 32,
@@ -514,7 +514,7 @@ const tasks = [
   {
     tileX: 28,
     tileY: 2,
-    x: 28 * TILE_SIZE,
+    x: 5 * TILE_SIZE,
     y: 2 * TILE_SIZE,
     w: 32,
     h: 32,
@@ -537,7 +537,7 @@ const tasks = [
   {
     tileX: 44,
     tileY: 22,
-    x: 44 * TILE_SIZE,
+    x: 57 * TILE_SIZE,
     y: 22 * TILE_SIZE,
     w: 32,
     h: 32,
@@ -565,8 +565,8 @@ const tasks = [
   {
     tileX: 36,
     tileY: 40,
-    x: 36 * TILE_SIZE,
-    y: 40 * TILE_SIZE,
+    x: 31 * TILE_SIZE,
+    y: 35 * TILE_SIZE,
     w: 32,
     h: 32,
     isCompleted: false,
@@ -593,8 +593,8 @@ const tasks = [
   {
     tileX: 40,
     tileY: 52,
-    x: 40 * TILE_SIZE,
-    y: 54 * TILE_SIZE,
+    x: 29.5 * TILE_SIZE,
+    y: 5 * TILE_SIZE,
     w: 32,
     h: 32,
     isCompleted: false,
@@ -655,8 +655,8 @@ const tasks = [
   {
     tileX: 50,
     tileY: 6,
-    x: 50 * TILE_SIZE,
-    y: 8 * TILE_SIZE,
+    x: 47 * TILE_SIZE,
+    y: 5 * TILE_SIZE,
     w: 32,
     h: 32,
     isCompleted: false,
@@ -703,8 +703,8 @@ const tasks = [
   {
     tileX: 50,
     tileY: 42,
-    x: 50 * TILE_SIZE,
-    y: 46 * TILE_SIZE,
+    x: 47 * TILE_SIZE,
+    y: 60 * TILE_SIZE,
     w: 32,
     h: 32,
     isCompleted: false,
